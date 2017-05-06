@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-header></v-header>
-    <div class="tab">
+    <v-header :seller="seller"></v-header>
+    <div class="tab border-1px">
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
       </div>
@@ -14,7 +14,7 @@
     </div>
 
     <!-- 根据不同的路由改变不同的内容 -->
-    <router-view class="content"></router-view>
+    <router-view :seller="seller" class="content"></router-view>
   </div>
 </template>
 
@@ -22,14 +22,35 @@
 import header from './components/header/header.vue';
 
 export default {
+  data() {
+    return {
+      seller: {}  // 用来存放获取到的seller数据
+    }
+  },
+  mounted: function() {
+    this.$nextTick(function() {
+      this.View();
+    })
+  },
   components: {
     'v-header': header
+  },
+  methods: {
+    View: function() {
+      this.$http.get('api/seller').then(res => {
+        this.seller = res.body.data;
+        console.log(this.seller);
+      }, res => {
+        alert('数据请求失败');
+      });
+    }
   }
 }
 </script>
 
 <style lang="scss">
 @import "./common/scss/mixin.scss";
+/* @import "./common/stylus/mixin"; */
 
   .tab {
     display: flex;

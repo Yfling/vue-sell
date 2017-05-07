@@ -4,7 +4,7 @@
     <!--     BScroll屏幕下滑操作要引用dom,所以这里要用ref获取，并命名为food-wrapper,vue1.0是v-el属性，v2.0要用ref属性 -->
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="item in goods" class="menu-item">
+        <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -15,7 +15,8 @@
     <!-- 用ref属性获取dom 1.0命名可以写成羊肉串，但是2.0必须驼峰-->
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="item in goods" class="food-list">
+        <!-- food-list-hook在这里没有实际的样式，只是为了让Js能够选择到 -->
+        <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="food in item.foods" class="food-item border-1px">
@@ -47,14 +48,30 @@
   const ERR_OK = 0;  // OK码:代表请求成功，不是错误的意思
 
   export default {
-    data() {
-      return {
-        goods: []  // 用来存放请求的goods数据
-      }
-    },
     props: {
       seller: {  // 接受从父组件传过来的数据
         type: Object
+      }
+    },
+    data() {
+      return {
+        goods: [],  // 用来存放请求的goods数据
+        listHeight: [],  // 用来存放每个菜单区间的高度高度
+        scrollY: 0
+      }
+    },
+    computed: {
+      // 左右侧的高度做一个映射
+      currentIndex() {
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let height1 = this.listHeight[i];
+          let height2 = this.listHeight[i + 1];
+          // 如果高度在height1与height2的这个区间内，或者height2不存在，即滚动到了最后一个Li
+          if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+            return i;
+          }
+        }
+        return 0;
       }
     },
     // 生命周期
@@ -68,9 +85,12 @@
         // if (res.errno == ERR_OK)  {
           this.goods = res.body.data;
           // console.log(this.goods);
-          // 在created的生命周期，调用屏幕下滑方法
+
           this.$nextTick(() => {
+            // 在created的生命周期，调用屏幕下滑方法
             this._initScroll();
+            // 调用计算高度的方法
+            this._calculateHeight();
           });
         // }
       }, res => {
@@ -79,9 +99,32 @@
       })
     },
     methods: {
+      // 实现滑动控制菜单的上下滚动
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
-        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {});
+        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {probeType: 3});
+        // 实时的拿到右侧的Y轴滚动值（这里利用的是BScroll的一个接口）
+        this.foodsScroll.on('scroll', (pos) => {
+          this.scrollY = Math.abs(Math.round(pos.y));
+        });
+      },
+      // 计算每一个<li>菜单的高度
+      _calculateHeight() {
+        // 通过className取到每一个li
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+        let height = 0;
+        this.listHeight.push(height);
+        for (let i = 0; i < foodList.length; i++) {
+          // let item = foodList[i];
+          height += foodList[i].clientHeight;
+          this.listHeight.push(height);
+        }
+      },
+      selectMenu(index) {
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+        let el = foodList[index];
+        // 利用BScroll自带的借口实现菜单点击滚动到相应菜单
+        this.foodsScroll.scrollToElement(el, 300);
       }
     }
   }
@@ -104,8 +147,19 @@
       display: table;  /* 多行垂直居中 */
       width: 56px;
       height: 54px;
-      line-height: 14px;
       padding: 0 12px;
+      line-height: 14px;
+      /* 这里如果不用&符号，就要把样式写出，与menu-item平级 */
+      &.current {
+        position: relative;
+        z-index: 10;
+        margin-top: -1px;
+        background: #fff;
+        font-weight: 700;
+        .text {
+          @include border-none();
+        }
+      }
       .icon {
         vertical-align: top;
         display: inline-block;

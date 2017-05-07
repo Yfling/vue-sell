@@ -39,11 +39,14 @@
         </li>
       </ul>
     </div>
+    <!-- 把配送费和起送费传给购物车组件 -->
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/javascript">
   import BScroll from 'better-scroll';
+  import shopcart from '../shopcart/shopcart';
 
   const ERR_OK = 0;  // OK码:代表请求成功，不是错误的意思
 
@@ -52,6 +55,9 @@
       seller: {  // 接受从父组件传过来的数据
         type: Object
       }
+    },
+    components: {
+      shopcart
     },
     data() {
       return {

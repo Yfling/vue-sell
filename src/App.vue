@@ -27,7 +27,7 @@ export default {
       seller: {}  // 用来存放获取到的seller数据
     }
   },
-  mounted: function() {
+  mounted() {
     this.$nextTick(function() {
       this.View();
     })
@@ -36,10 +36,10 @@ export default {
     'v-header': header
   },
   methods: {
-    View: function() {
+    View() {
       this.$http.get('api/seller').then(res => {
         this.seller = res.body.data;
-        console.log(this.seller);
+        // console.log(this.seller);
       }, res => {
         alert('数据请求失败');
       });

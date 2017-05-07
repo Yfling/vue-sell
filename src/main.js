@@ -29,7 +29,7 @@ const router = new VueRouter({
 })
 
 // 打开界面的默认页面
-router.push('/seller');
+router.push('/goods');
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

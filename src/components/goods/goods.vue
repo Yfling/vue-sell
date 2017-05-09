@@ -70,7 +70,8 @@
       return {
         goods: [],  // 用来存放请求的goods数据
         listHeight: [],  // 用来存放每个菜单区间的高度高度
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       }
     },
     computed: {

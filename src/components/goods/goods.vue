@@ -19,6 +19,7 @@
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
+            <!-- 这里的food指的是每一个li对应的food数据 -->
             <li v-for="food in item.foods" class="food-item border-1px">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon">
@@ -33,6 +34,10 @@
                   <span class="now">¥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+<!--                   这里需要传入每个li对应的数据，因为前面li遍历的是v-for="food in item.foods",所以这里要传入food -->
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
@@ -40,13 +45,14 @@
       </ul>
     </div>
     <!-- 把配送费和起送费传给购物车组件 -->
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/javascript">
-  import BScroll from 'better-scroll';
-  import shopcart from '../shopcart/shopcart';
+  import BScroll from 'better-scroll';  // 上下滑动组件
+  import shopcart from '../shopcart/shopcart';  // 底部购物车组件
+  import cartcontrol from '../cartcontrol/cartcontrol';  // 增加减少商品组件
 
   const ERR_OK = 0;  // OK码:代表请求成功，不是错误的意思
 
@@ -57,7 +63,8 @@
       }
     },
     components: {
-      shopcart
+      shopcart,
+      cartcontrol
     },
     data() {
       return {
@@ -78,6 +85,18 @@
           }
         }
         return 0;
+      },
+      // 将底部的购物车组件数据与菜单上的加减按钮对应的数据联动起来
+      selectFoods() {
+        let foods = [];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     // 生命周期
@@ -249,16 +268,21 @@
         .price {
           font-weight: 700;
           line-height: 24px;
+          .now {
+            margin-right: 8px;
+            font-size: 14px;
+            color: rgb(240, 20, 20);
+          }
+          .old {
+            text-decoration: line-through;
+            font-size: 10px;
+            color: rgb(147, 153, 159);
+          }
         }
-        .now {
-          margin-right: 8px;
-          font-size: 14px;
-          color: rgb(240, 20, 20);
-        }
-        .old {
-          text-decoration: line-through;
-          font-size: 10px;
-          color: rgb(147, 153, 159);
+        .cartcontrol-wrapper {
+          position: absolute;
+          right: 12px;
+          bottom: 12px;
         }
       }
     }

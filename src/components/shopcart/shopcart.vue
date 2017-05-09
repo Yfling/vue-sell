@@ -3,18 +3,24 @@
     <div class="content">
       <div class="content-left">
         <div class="logo-wrapper">
-          <div class="logo">
-            <i class="icon-shopping_cart"></i>
+          <div class="logo" :class="{'highlight':totalCount>0}">
+            <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
           </div>
-          <div class="num"></div>
+          <div class="num" v-show="totalCount>0">{{totalCount}}</div>
         </div>
-        <div class="price">¥{{totalPrice}}</div>
+        <div class="price" :class="{'highlight':totalPrice>0}">¥{{totalPrice}}</div>
         <!-- 这里不需要写成seller.deliveryPrice -->
         <div class="desc">另需配送费¥{{deliveryPrice}}元</div>
       </div>
       <div class="content-right">
-        <div class="pay">
-          ¥{{minPrice}}元起送
+        <div class="pay" :class="payClass">
+          {{payDesc}}
+        </div>
+      </div>
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty"></span>
         </div>
       </div>
     </div>
@@ -25,10 +31,15 @@
 export default {
   props: {
     // 接受父组件的参数时，最好设置一下类型和默认值
-    selectFoods: {
+    selectFoods: {  // selectFoods不是从父组件传过来的么？
       type: Array,
       default() {  // 在vue里面，如果type是Array/Object，那么default要设为函数
-        return [];
+        return [
+          {
+            price: 40,
+            count: 2
+          }
+        ];
       }
     },
     deliveryPrice: {
@@ -41,6 +52,7 @@ export default {
     }
   },
   computed: {
+    // 计算总金额
     totalPrice() {
       let total = 0;
       this.selectFoods.forEach((food) => {
@@ -48,12 +60,35 @@ export default {
       });
       return total;
     },
+    // 计算购买货物的总数
     totalCount() {
       let count = 0;
       this.selectFoods.forEach((food) => {
         count += food.count;
       });
       return count;
+    },
+    // 计算右下角图标显示的的具体文字
+    payDesc() {
+      if (this.totalPrice ===0) {
+        return `¥${this.minPrice}起送`;
+      }
+      else if (this.totalPrice < this.minPrice) {
+        let diff = this.minPrice - this.totalPrice;
+        return `还差${diff}元起送`;
+      }
+      else {
+        return '去结算';
+      }
+    },
+    // 计算是否结算的className
+    payClass() {
+      if (this.totalPrice < this.minPrice) {
+        return 'not-enough';
+      }
+      else {
+        return 'enough';
+      }
     }
   }
 };
@@ -92,11 +127,33 @@ export default {
             border-radius: 50%;
             text-align: center;
             background: #2b343c;
+            /* 凡是涉及到动态更新的class 并且与其他className平级，一定要加& */
+            &.highlight {
+              background: rgb(0, 160, 220);
+            }
             .icon-shopping_cart {
               line-height: 44px;
               font-size: 24px;
               color: #80858a;
+              &.highlight {
+                color: #fff;
+              }
             }
+          }
+          .num {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            border-radius: 16px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #fff;
+            background: rgb(240, 20, 20);
+            box-showdow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
           }
         }
         .price {
@@ -109,6 +166,9 @@ export default {
           border-right: 1px solid rgba(255, 255, 255, 0.1);
           font-size: 12px;
           font-weight: 700;
+          &.highlight {
+            color: #fff;
+          }
         }
         .desc {
           display: inline-block;
@@ -127,6 +187,13 @@ export default {
           text-align: center;
           font-size: 12px;
           font-weight: 700;
+          &.not-enough {
+            background: #2b333b
+          }
+          &.enough {
+            background: #00b43c;
+            color: #fff;
+          }
         }
       }
     }

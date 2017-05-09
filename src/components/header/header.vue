@@ -247,13 +247,13 @@ export default {
   background: rgba(7, 17, 27, 0.8);
   backdrop-filter: blur(10px);
   /* 过渡动画和1.0有区别，这里要注意一下 */
-  &.fade-enter-active {  /* 进入过渡的结束状态 */
-    opacity: 1;
-    background: rgba(7, 17, 27, 0.8);
-  }
   &.fade-enter {  /* 进入过渡的开始状态 */
     opacity: 0;
     background: rgba(7, 17, 27, 0);
+  }
+  &.fade-enter-active {  /* 进入过渡的结束状态 */
+    opacity: 1;
+    background: rgba(7, 17, 27, 0.8);
   }
   &.fade-leave {  /* 离开过渡的开始状态 */
     opacity: 1;

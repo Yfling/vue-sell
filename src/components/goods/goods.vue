@@ -20,9 +20,9 @@
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <!-- 这里的food指的是每一个li对应的food数据 -->
-            <li v-for="food in item.foods" class="food-item border-1px">
+            <li  v-for="food in item.foods" class="food-item border-1px">
               <div class="icon">
-                <img width="57" height="57" :src="food.icon">
+                <img @click="selectFood(food)" width="57" height="57" :src="food.icon">
               </div>
               <div class="content">
                 <h2 class="name">{{food.name}}</h2>
@@ -46,13 +46,19 @@
     </div>
     <!-- 把配送费和起送费传给购物车组件 -->
     <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+
+    <!-- 通过v-ref可以让good.vue调用food里面的方法 -->
+    <!-- :food用来向子组件传入数据 -->
+    <food :food="selectedFood" ref="food"></food>
   </div>
+
 </template>
 
 <script type="text/javascript">
   import BScroll from 'better-scroll';  // 上下滑动组件
   import shopcart from '../shopcart/shopcart';  // 底部购物车组件
   import cartcontrol from '../cartcontrol/cartcontrol';  // 增加减少商品组件
+  import food from '../food/food';  // 商品详情组件
 
   const ERR_OK = 0;  // OK码:代表请求成功，不是错误的意思
 
@@ -64,7 +70,8 @@
     },
     components: {
       shopcart,
-      cartcontrol
+      cartcontrol,
+      food
     },
     data() {
       return {
@@ -151,6 +158,10 @@
         let el = foodList[index];
         // 利用BScroll自带的借口实现菜单点击滚动到相应菜单
         this.foodsScroll.scrollToElement(el, 300);
+      },
+      selectFood(food) {
+        this.selectedFood = food; // 把当前选中的那一个food数据传进去
+        this.$refs.food.show();  // 执行food.vue里面的show方法
       }
     }
   }

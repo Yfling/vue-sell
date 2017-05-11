@@ -134,8 +134,12 @@
     methods: {
       // 实现滑动控制菜单的上下滚动
       _initScroll() {
-        this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
-        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {probeType: 3});
+        this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+          click: true
+        });
+        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {probeType: 3,
+          click: true
+        });
         // 实时的拿到右侧的Y轴滚动值（这里利用的是BScroll的一个接口）
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));

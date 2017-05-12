@@ -34,5 +34,6 @@ router.push('/goods');
 new Vue({
   el: '#app',
   router,
+  // render:vue2.0特性
   render: h => h(App)
 })

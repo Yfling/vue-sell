@@ -36,7 +36,7 @@
                 </div>
                 <div class="cartcontrol-wrapper">
 <!--                   这里需要传入每个li对应的数据，因为前面li遍历的是v-for="food in item.foods",所以这里要传入food -->
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol @add="addFood"  :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -49,7 +49,8 @@
 
     <!-- 通过v-ref可以让good.vue调用food里面的方法 -->
     <!-- :food用来向子组件传入数据 -->
-    <food :food="selectedFood" ref="food"></food>
+    <!-- @add监听变化 -->
+    <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
 
 </template>
@@ -166,6 +167,9 @@
       selectFood(food) {
         this.selectedFood = food; // 把当前选中的那一个food数据传进去
         this.$refs.food.show();  // 执行food.vue里面的show方法
+      },
+      addFood(target) {
+        // this._drop(target);
       }
     }
   }

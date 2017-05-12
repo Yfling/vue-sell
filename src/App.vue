@@ -19,13 +19,19 @@
 </template>
 
 <script>
+import {urlParse} from './common/js/util.js';
 import header from './components/header/header.vue';
 
 export default {
   data() {
     return {
-      seller: {}  // 用来存放获取到的seller数据
-    }
+      seller: {
+        id: (() => {
+          let queryParam = urlParse();
+          return queryParam.id;
+        })()
+      }
+    };
   },
   mounted() {
     this.$nextTick(function() {
@@ -37,9 +43,11 @@ export default {
   },
   methods: {
     View() {
-      this.$http.get('api/seller').then(res => {
+      this.$http.get('api/seller?id=' + this.seller.id).then(res => {
         this.seller = res.body.data;
-        // console.log(this.seller);
+        // this.seller = Object.assign({}, this.seller, res.data);
+
+        console.log(this.seller.id);
       }, res => {
         alert('数据请求失败');
       });

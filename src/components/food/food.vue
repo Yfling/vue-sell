@@ -17,7 +17,7 @@
           <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
         </div>
         <div class="cartcontrol-wrapper">
-          <cartcontrol :food="food"></cartcontrol>
+          <cartcontrol @add="addFood" :food="food"></cartcontrol>
         </div>
         <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count === 0">加入购物车</div>
       </div>
@@ -29,7 +29,7 @@
       <split></split>
       <div class="rating">
         <h1 class='title'>商品评价</h1>
-        <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+        <ratingselect @select="selectRating" @toggle="toggleContent" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
         <div class="rating-wrapper">
           <ul v-show="food.ratings && food.ratings.length">
             <!-- 这里通过v-show来根据不同的选项展示不同的评价内容 -->
@@ -91,20 +91,14 @@ export default {
   methods: {
     show() {
       this.showFlag = true;
-
-      // 初始化状态保持一致
       this.selectType = ALL;
       this.onlyContent = true;
-
-      // BScroll相关操作
       this.$nextTick(() => {
         if (!this.scroll) {
           this.scroll = new BScroll(this.$refs.food, {
             click: true
           });
-          // this.scroll = new BScroll(this.$refs.food, {});
-        }
-        else {
+        } else {
           this.scroll.refresh();
         }
       });
@@ -118,9 +112,10 @@ export default {
       if (!event._constructed) {
         return;
       }
-      // this.$dispatch('cart.add', event.target)
+      // 待修改
+      this.$emit('add', event.target)
       // 调用vue的接口，添加一个之前没有的属性
-      // Vue.set(this.food, 'count', 1);
+      Vue.set(this.food, 'count', 1);
     },
     needShow(type, text) {
       // 如果要显示内容，但是又没有内容，那么不显示
@@ -135,6 +130,21 @@ export default {
       else {
         return type === this.selectType;
       }
+    },
+    addFood(target) {
+      this.$emit('add', target);
+    },
+    selectRating(type) {
+      this.selectType = type;
+      this.$nextTick(() => {
+        this.scroll.refresh();
+      });
+    },
+    toggleContent() {
+      this.onlyContent = !this.onlyContent;
+      this.$nextTick(() => {
+        this.scroll.refresh();
+      });
     }
   },
   // 待修改

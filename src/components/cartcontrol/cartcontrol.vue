@@ -21,7 +21,10 @@
       }
     },
     methods: {
-      addCart() {
+      addCart(event) {
+        if (!event._constructed) {
+          return;
+        }
         console.log('click');
         if (!this.food.count) {
           // 这里不能直接添加下面这句话，因为count是之前没有的一个属性

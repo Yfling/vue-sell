@@ -25,7 +25,8 @@
         </div>
       </div>
       <split></split>
-      <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="ratings"></ratingselect>
+      <ratingselect @select="selectRating" @toggle="toggleContent" :selectType="selectType" :onlyContent="onlyContent"
+              :ratings="ratings"></ratingselect>
       <div class="rating-wrapper">
         <ul>
           <!-- 这里的v-show是用过选择不同的(内容、满意、不满意)来显示具体某一个内容 -->
@@ -117,6 +118,18 @@ export default {
       else {
         return type === this.selectType;
       }
+    },
+    selectRating(type) {
+      this.selectType = type;
+      this.$nextTick(() => {
+        this.scroll.refresh();
+      });
+    },
+    toggleContent() {
+      this.onlyContent = !this.onlyContent;
+      this.$nextTick(() => {
+        this.scroll.refresh();
+      });
     }
   },
   events: {
@@ -271,7 +284,7 @@ export default {
           line-height: 16px;
           font-size: 0px;
           .icon-thumb_up, .item {
-            display: inline-block;
+            display: inline-bloc k;
             margin: 0 8px 4px 0;
             font-size: 9px;
           }

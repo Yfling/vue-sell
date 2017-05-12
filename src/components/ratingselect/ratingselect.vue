@@ -66,18 +66,18 @@
           return;
         }
 
-        this.selectType = type;
+        // this.selectType = type;
         // 告诉父组件子组件的变化
-        // this.$dispatch('ratingtype.select', type);
+        this.$emit('select', type);
       },
       toggleContent(event) {
         if (!event._constructed) {
           return;
         }
         // console.log('click');
-        this.onlyContent = !this.onlyContent;
+        // this.onlyContent = !this.onlyContent;
         // 通知父组件子组件的变化
-        // this.$dispatch('content.toggle', this.onlyContent);
+        this.$emit('toggle');
       }
     }
   }

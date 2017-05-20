@@ -22,5 +22,9 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 
 效果图预览：
-![](https://github.com/Yfling/vue-sell/blob/master/view/1.png?raw=true)
-![](https://raw.githubusercontent.com/Yfling/vue-sell/ce5f82a9d1867f74fec0bbb28520ba4a7b3c870f/view/2.png)
+![](https://github.com/Yfling/vue-sell/blob/master/preview/1.png?raw=true)
+![](https://github.com/Yfling/vue-sell/blob/master/preview/2.png?raw=true)
+![](https://github.com/Yfling/vue-sell/blob/master/preview/3.png?raw=true)
+![](https://github.com/Yfling/vue-sell/blob/master/preview/4.png?raw=true)
+![](https://github.com/Yfling/vue-sell/blob/master/preview/5.png?raw=true)
+

@@ -21,7 +21,7 @@ npm run build --report
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 
-效果图预览：
+
 ![](https://github.com/Yfling/vue-sell/blob/master/preview/1.png?raw=true)
 ![](https://github.com/Yfling/vue-sell/blob/master/preview/2.png?raw=true)
 ![](https://github.com/Yfling/vue-sell/blob/master/preview/3.png?raw=true)

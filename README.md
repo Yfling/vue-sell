@@ -1,4 +1,4 @@
-# vue-app(更新中)
+# vue-app
 
 > sell app
 
